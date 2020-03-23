@@ -75,7 +75,7 @@ class ClientThread(Thread):
                 if self.user['status'] == 3:
                     self.user['status'] = 0
                     drivers = self.find_all_in_prox(max_distance=10)
-                    self.csocket.send(bytes('\n{} drivers near you.| '.format(
+                    self.csocket.send(bytes('\n{} drivers near you.\n(Type "find" to start or "exit" to exit)| '.format(
                         len(drivers)
                     ), 'UTF-8'))
                     continue
@@ -98,14 +98,14 @@ class ClientThread(Thread):
 
                         print(distance, price)
 
-                        self.csocket.send(bytes('\nDistance: {:.1f} km\nPrice: R$ {:.2f}\nOK to continue...| '.format(
+                        self.csocket.send(bytes('\nDistance: {:.1f} km\nPrice: R$ {:.2f}\nOK to continue or NO to cancel...| '.format(
                             distance,
                             price
                         ), 'UTF-8'))
                         is_ok = self.csocket.recv(2048).decode().split('|')[0]
                         if 'ok' in is_ok.lower():
                             self.user['status'] = 2
-                            self.csocket.send(bytes('\nSearching drivers in proximity...| ', 'UTF-8'))
+                            self.csocket.send(bytes('\nSearching drivers in proximity...\n(Type "stop" to stop)| ', 'UTF-8'))
                             drivers = self.find_all_in_prox(max_distance=10, lat=float(init[0]), lon=float(init[1]))
                             for d in drivers:
                                 clients[d].user['status'] = 2
